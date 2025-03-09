@@ -1,0 +1,66 @@
+<UserControl x:Class="EventHub.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Background="#F4F4F4" >
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical" Width="650">
+                
+                <TextBlock Text="About EventHub" FontSize="28" FontWeight="Bold" Foreground="#222"
+                           HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+                <TextBlock Text="Welcome to EventHub, the ultimate event management application designed to simplify organizing, managing, and attending events."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                
+                <TextBlock Text="📌 Key Features" FontSize="20" FontWeight="Bold" Foreground="#007ACC" Margin="0,10,0,5"/>
+                
+                <TextBlock Text="✅ Event Creation and Management: Easily create and manage events with details such as event name, date, description, and images." 
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                
+                <TextBlock Text="✅ Ticketing System: Generate tickets for attendees, including standard, VIP, and accessible (disabled) ticket types."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+
+                <TextBlock Text="✅ Organizer and Attendee Management: Store organizer details such as name, email, and logo, and keep track of attendees."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+
+                <TextBlock Text="✅ Modern and Responsive UI: Enjoy a clean, modern, and user-friendly interface for seamless navigation."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+
+                <TextBlock Text="✅ Secure and Reliable: User information is securely managed to ensure data integrity and privacy."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                
+                <TextBlock Text="🎯 Who Can Benefit from EventHub?" FontSize="20" FontWeight="Bold" Foreground="#007ACC" Margin="0,20,0,5"/>
+                
+                <TextBlock Text="🔹 Event Organizers – Plan and manage multiple events effortlessly."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                <TextBlock Text="🔹 Companies and Businesses – Host corporate meetings, conferences, and team-building activities."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                <TextBlock Text="🔹 Music and Entertainment Industry – Sell and manage concert tickets with ease."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                <TextBlock Text="🔹 Non-Profit Organizations – Organize fundraisers, community gatherings, and awareness campaigns."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                
+                <TextBlock Text="🔧 Technologies Used" FontSize="20" FontWeight="Bold" Foreground="#007ACC" Margin="0,20,0,5"/>
+                
+                <TextBlock Text="🔹 WPF (Windows Presentation Foundation) – A powerful UI framework for creating a visually rich application."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                <TextBlock Text="🔹 C# and .NET – Provides high performance, reliability, and security."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                <TextBlock Text="🔹 MVVM Architecture – A structured Model-View-ViewModel pattern for clean and maintainable code."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+
+                <TextBlock Text="📢 Future Updates and Enhancements" FontSize="20" FontWeight="Bold" Foreground="#007ACC" Margin="0,20,0,5"/>
+
+                <TextBlock Text="🚀 Online Ticket Purchasing – Implement payment processing for ticket sales."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                <TextBlock Text="🚀 Event Notifications – Send email reminders and updates to attendees."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                <TextBlock Text="🚀 Mobile Compatibility – Expand EventHub to mobile platforms for convenience."
+                           FontSize="14" Foreground="#444" TextWrapping="Wrap" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Thank you for choosing EventHub – your one-stop solution for effortless event management! 🎉"
+                           FontSize="14" FontWeight="Bold" Foreground="#007ACC" TextWrapping="Wrap" Margin="0,20,0,0"/>
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

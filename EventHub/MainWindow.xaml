@@ -1,0 +1,36 @@
+﻿<Window x:Class="EventHub.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EventHub" MinHeight="600" MinWidth="900">
+    <DockPanel>
+        <ListBox DockPanel.Dock="Left" Width="200" Background="LightGray" SelectionChanged="MenuSelectionChanged">
+            <ListBoxItem Tag="HomeView">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="🏠 Home" VerticalAlignment="Center" Margin="10,0"/>
+                </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem Tag="EventsView">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="🎉 Events" VerticalAlignment="Center" Margin="10,0"/>
+                </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem Tag="AboutView">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="ℹ️ About app" VerticalAlignment="Center" Margin="10,0"/>
+                </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem Tag="OrganizersView">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="👨‍💻 Organizers" VerticalAlignment="Center" Margin="10,0"/>
+                </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem Tag="TicketsView">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="🎟️ Tickets" VerticalAlignment="Center" Margin="10,0"/>
+                </StackPanel>
+            </ListBoxItem>
+        </ListBox>
+
+        <Grid x:Name="MainContentArea"/>
+    </DockPanel>
+</Window>

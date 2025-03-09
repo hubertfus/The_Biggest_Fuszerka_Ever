@@ -1,0 +1,27 @@
+<Window x:Class="EventHub.OrganizerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Organizer Details" 
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Background="#F4F4F4">
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Width="350" Margin="10">
+            
+            <TextBlock Text="Organizer Name" FontSize="16" Margin="0,5"/>
+            <TextBox x:Name="OrganizerName" FontSize="14" Padding="10" Margin="0,10" BorderBrush="#DDD" BorderThickness="1" />
+            
+            <TextBlock Text="Description" FontSize="16" Margin="0,5"/>
+            <TextBox x:Name="OrganizerDescription" FontSize="14" Padding="10" Margin="0,10" BorderBrush="#DDD" BorderThickness="1" />
+            
+            <TextBlock Text="Email" FontSize="16" Margin="0,5"/>
+            <TextBox x:Name="OrganizerEmail" FontSize="14" Padding="10" Margin="0,10" BorderBrush="#DDD" BorderThickness="1" />
+
+            <TextBlock Text="Logo URL" FontSize="16" Margin="0,5"/>
+            <TextBox x:Name="OrganizerLogoUrl" FontSize="14" Padding="10" Margin="0,10" BorderBrush="#DDD" BorderThickness="1" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10">
+                <Button Content="Cancel" Click="Cancel_Click" Width="100" Height="40" Margin="0,0,10,0" Background="#FFB0B0B0" Foreground="White" BorderBrush="Transparent" />
+                <Button Content="Save" Click="Save_Click" Width="100" Height="40" Background="#FF4CAF50" Foreground="White" BorderBrush="Transparent" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
