@@ -10,8 +10,7 @@
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Width="350" Margin="10">
 
             <TextBlock Text="Event Name" FontSize="16" Margin="0,5"/>
-            <TextBox x:Name="EventName" FontSize="14" Padding="10" Margin="0,10" BorderBrush="#DDD" BorderThickness="1" IsReadOnly="True"/>
-
+            <TextBlock x:Name="EventName" FontSize="16" Margin="0,5"/>
             <TextBlock Text="Buyer Name" FontSize="16" Margin="0,5"/>
             <TextBox x:Name="BuyerName" FontSize="14" Padding="10" Margin="0,10" BorderBrush="#DDD" BorderThickness="1"/>
 

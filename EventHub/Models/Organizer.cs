@@ -8,7 +8,8 @@ namespace EventHub
         private string? _description;
         private string? _email;
         private string? _logoUrl;
-
+        
+        public int Id {get; set;}
         public string? Name
         {
             get => _name;

@@ -14,11 +14,6 @@
                     <TextBlock Text="🎉 Events" VerticalAlignment="Center" Margin="10,0"/>
                 </StackPanel>
             </ListBoxItem>
-            <ListBoxItem Tag="AboutView">
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <TextBlock Text="ℹ️ About app" VerticalAlignment="Center" Margin="10,0"/>
-                </StackPanel>
-            </ListBoxItem>
             <ListBoxItem Tag="OrganizersView">
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="👨‍💻 Organizers" VerticalAlignment="Center" Margin="10,0"/>
@@ -27,6 +22,11 @@
             <ListBoxItem Tag="TicketsView">
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="🎟️ Tickets" VerticalAlignment="Center" Margin="10,0"/>
+                </StackPanel>
+            </ListBoxItem>
+            <ListBoxItem Tag="AboutView">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="ℹ️ About app" VerticalAlignment="Center" Margin="10,0"/>
                 </StackPanel>
             </ListBoxItem>
         </ListBox>

@@ -2,6 +2,7 @@ namespace EventHub
 {
     public class Ticket
     {
+        public int Id { get; set; }
         public string EventName { get; set; }
         public Person TicketHolder { get; set; } 
 
@@ -11,7 +12,7 @@ namespace EventHub
             TicketHolder = person;
         }
 
-        public string PersonType => TicketHolder.GetPersonType();
+        public string PersonType => TicketHolder.PersonType;
         public override string ToString()
         {
             return $"Event: {EventName}\n" +

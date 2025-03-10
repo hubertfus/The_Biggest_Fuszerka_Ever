@@ -13,11 +13,9 @@ namespace EventHub
 
         private void AddOrganizer_Click(object sender, RoutedEventArgs e)
         {
-            // Open the dialog for adding a new organizer
             OrganizerDialog organizerDialog = new OrganizerDialog();
             bool? dialogResult = organizerDialog.ShowDialog();
 
-            // If dialog result is true (Save button clicked), add the new organizer
             if (dialogResult == true)
             {
                 OrganizerManager.Instance.AddOrganizer(organizerDialog.Organizer);
@@ -33,13 +31,24 @@ namespace EventHub
 
         private void EditOrganizer_Click(object sender, RoutedEventArgs e)
         {
-            var button = (Button)sender;
-            var organizerToEdit = (Organizer)button.DataContext;
+            if (sender is Button button && button.DataContext is Organizer organizerItem)
+            {
+                string originalName = organizerItem.Name;
 
-            OrganizerDialog organizerDialog = new OrganizerDialog(organizerToEdit);
-            bool? dialogResult = organizerDialog.ShowDialog();
+                OrganizerDialog dialog = new OrganizerDialog(new Organizer
+                {
+                    Id = organizerItem.Id,
+                    Name = organizerItem.Name,
+                    Email = organizerItem.Email,
+                    Description = organizerItem.Description,
+                    LogoUrl = organizerItem.LogoUrl
+                });
+                dialog.ShowDialog();
 
-            
-        }
-    }
+                if (dialog.DialogResult == true)
+                {
+                    OrganizerManager.Instance.UpdateOrganizer(dialog.Organizer);
+                }
+            }
+        }    }
 }

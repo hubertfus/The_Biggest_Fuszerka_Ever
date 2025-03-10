@@ -27,18 +27,17 @@ namespace EventHub
             switch (selectedType)
             {
                 case "VIP":
-                    buyer = new VipPerson(BuyerName.Text, BuyerEmail.Text);
+                    buyer = new VipPerson(0, BuyerName.Text, BuyerEmail.Text);
                     break;
                 case "Disabled":
-                    buyer = new DisabledPerson(BuyerName.Text, BuyerEmail.Text);
+                    buyer = new DisabledPerson(0, BuyerName.Text, BuyerEmail.Text);
                     break;
                 default:
-                    buyer = new Person(BuyerName.Text, BuyerEmail.Text);
+                    buyer = new Person(0, BuyerName.Text, BuyerEmail.Text);
                     break;
             }
 
             GeneratedTicket = new Ticket(EventName.Text, buyer);
-
             DialogResult = true;
             Close();
         }

@@ -2,38 +2,27 @@ namespace EventHub
 {
     public class Person
     {
+        public int Id { get; set; } 
         public string Name { get; set; }
         public string Email { get; set; }
+        public string PersonType { get; set; }
 
-        public Person(string name, string email)
+        public Person(int id, string name, string email, string personType = "Standard")
         {
+            Id = id;
             Name = name;
             Email = email;
-        }
-
-        public virtual string GetPersonType()
-        {
-            return "Standard";
+            PersonType = personType;
         }
     }
 
     public class VipPerson : Person
     {
-        public VipPerson(string name, string email) : base(name, email) { }
-
-        public override string GetPersonType()
-        {
-            return "VIP";
-        }
+        public VipPerson(int id, string name, string email) : base(id, name, email, "VIP") { }
     }
 
     public class DisabledPerson : Person
     {
-        public DisabledPerson(string name, string email) : base(name, email) { }
-
-        public override string GetPersonType()
-        {
-            return "Disabled";
-        }
+        public DisabledPerson(int id, string name, string email) : base(id, name, email, "Disabled") { }
     }
 }
