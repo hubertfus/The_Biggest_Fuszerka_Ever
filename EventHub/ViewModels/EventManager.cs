@@ -1,5 +1,7 @@
+using System;
 using System.Collections.ObjectModel;
-using Npgsql; // Zmieniono z SqlClient na Npgsql
+using System.Linq;
+using Npgsql;
 using DotNetEnv;
 
 namespace EventHub
@@ -26,7 +28,7 @@ namespace EventHub
             using (var connection = _databaseHelper.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT Id, Name, Date, Description, ImageUrl FROM Events";
+                var query = "SELECT Id, Name, Date, Description, ImageUrl, OrganizerId FROM Events";
                 using (var command = new NpgsqlCommand(query, connection))
                 using (var reader = command.ExecuteReader())
                 {
@@ -36,11 +38,11 @@ namespace EventHub
                         {
                             Id = reader.GetInt32(0),
                             Name = reader["Name"].ToString(),
-                            Date = reader["Date"].ToString(),
+                            Date = reader.GetDateTime(2),
                             Description = reader["Description"].ToString(),
-                            ImageUrl = reader["ImageUrl"].ToString()
+                            ImageUrl = reader["ImageUrl"].ToString(),
+                            OrganizerId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5)
                         };
-                        Console.WriteLine($"Loaded event: ID={ev.Id}, Name={ev.Name}");
 
                         Events.Add(ev);
                     }
@@ -53,38 +55,36 @@ namespace EventHub
             using (var connection = _databaseHelper.GetConnection())
             {
                 connection.Open();
-                var query = "INSERT INTO Events (Name, Date, Description, ImageUrl) " +
-                            "VALUES (@Name, @Date, @Description, @ImageUrl) RETURNING Id";
-
-                using (var command = new NpgsqlCommand(query, connection)) 
+                var query = "INSERT INTO Events (Name, Date, Description, ImageUrl, OrganizerId) " +
+                            "VALUES (@Name, @Date, @Description, @ImageUrl, @OrganizerId) RETURNING Id";
+                using (var command = new NpgsqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Name", newEvent.Name);
-                    command.Parameters.AddWithValue("@Date", newEvent.Date);
+                    command.Parameters.AddWithValue("@Date", newEvent.Date); 
                     command.Parameters.AddWithValue("@Description", newEvent.Description);
                     command.Parameters.AddWithValue("@ImageUrl", newEvent.ImageUrl);
-    
-                    newEvent.Id = Convert.ToInt32(command.ExecuteScalar()); 
-                }
+                    command.Parameters.AddWithValue("@OrganizerId", newEvent.OrganizerId);
 
+                    newEvent.Id = Convert.ToInt32(command.ExecuteScalar());
+                }
             }
             Events.Add(newEvent);
         }
-        
+
         public void UpdateEvent(Event updatedEvent)
         {
             using (var connection = _databaseHelper.GetConnection())
             {
                 connection.Open();
-                var query = "UPDATE Events SET Name = @Name, Date = @Date, Description = @Description, ImageUrl = @ImageUrl " +
-                            "WHERE Id = @Id";
-                Console.WriteLine($"Updating event ID: {updatedEvent.Id}, Name: {updatedEvent.Name}, Date: {updatedEvent.Date}");
-
+                var query = "UPDATE Events SET Name = @Name, Date = @Date, Description = @Description, " +
+                            "ImageUrl = @ImageUrl, OrganizerId = @OrganizerId WHERE Id = @Id";
                 using (var command = new NpgsqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Name", updatedEvent.Name);
                     command.Parameters.AddWithValue("@Date", updatedEvent.Date);
                     command.Parameters.AddWithValue("@Description", updatedEvent.Description);
                     command.Parameters.AddWithValue("@ImageUrl", updatedEvent.ImageUrl);
+                    command.Parameters.AddWithValue("@OrganizerId", updatedEvent.OrganizerId);
                     command.Parameters.AddWithValue("@Id", updatedEvent.Id);
                     command.ExecuteNonQuery();
                 }
@@ -97,9 +97,9 @@ namespace EventHub
                 existingEvent.Date = updatedEvent.Date;
                 existingEvent.Description = updatedEvent.Description;
                 existingEvent.ImageUrl = updatedEvent.ImageUrl;
+                existingEvent.Organizer = updatedEvent.Organizer;
             }
         }
-
 
         public void RemoveEvent(Event eventToRemove)
         {
@@ -107,7 +107,7 @@ namespace EventHub
             {
                 connection.Open();
                 var query = "DELETE FROM Events WHERE Id = @Id";
-                using (var command = new NpgsqlCommand(query, connection)) 
+                using (var command = new NpgsqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", eventToRemove.Id);
                     command.ExecuteNonQuery();

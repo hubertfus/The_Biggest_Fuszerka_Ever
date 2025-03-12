@@ -62,6 +62,11 @@ namespace EventHub
             }
         }
 
+        public override string ToString()
+        {
+            return $"Id: {Id}\n Name: {Name} \n Description: {Description} \n Email: {Email}";
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

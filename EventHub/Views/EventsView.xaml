@@ -34,13 +34,16 @@
                                         <TextBlock Text="{Binding Date}" FontSize="14" Foreground="#666" Margin="0,5,0,0"/>
                                         <TextBlock Text="{Binding Description}" FontSize="14" Foreground="#444" 
                                                    TextWrapping="Wrap" MaxWidth="300"/>
+                                        <TextBlock Text="{Binding Organizer.Name}" FontSize="14" Foreground="#444" 
+                                                   TextWrapping="Wrap" MaxWidth="300"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
                                         <Button Content="✏️ Edit" Style="{StaticResource ModernButton}" 
                                                 Margin="0,0,0,5" Click="EditEvent_Click"/>
                                         <Button Content="🎟️ Generate Ticket" Style="{StaticResource ModernButton}" 
-                                                Click="GenerateTicket_Click"/>
+                                                Click="GenerateTicket_Click"
+                                                Visibility="{Binding Date, Converter={StaticResource DateToVisibilityConverter}}"/>
                                         <Button Content="🗑️ Delete Event" Style="{StaticResource ModernButton}" 
                                                 Click="DeleteEvent_Click"/>
                                     </StackPanel>

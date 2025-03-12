@@ -13,7 +13,6 @@ namespace EventHub
             _connectionString = connectionString;
         }
 
-        // Metoda do otwarcia połączenia z bazą danych
         public NpgsqlConnection  GetConnection()
         {
             return new NpgsqlConnection(_connectionString);

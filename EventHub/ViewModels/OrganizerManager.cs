@@ -71,8 +71,25 @@ namespace EventHub
             using (var connection = _databaseHelper.GetConnection())
             {
                 connection.Open();
+                var checkQuery = "SELECT COUNT(*) FROM Events WHERE OrganizerId = @Id";
+                using (var checkCommand = new NpgsqlCommand(checkQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@Id", organizerToRemove.Id);
+                    var eventCount = (long)checkCommand.ExecuteScalar();
+
+                    if (eventCount > 0)
+                    {
+                        var updateQuery = "UPDATE Events SET OrganizerId = NULL WHERE OrganizerId = @Id";
+                        using (var updateCommand = new NpgsqlCommand(updateQuery, connection))
+                        {
+                            updateCommand.Parameters.AddWithValue("@Id", organizerToRemove.Id);
+                            updateCommand.ExecuteNonQuery();
+                        }
+                    }
+                }
+
                 var query = "DELETE FROM Organizers WHERE Id = @Id";
-                using (var command = new NpgsqlCommand(query, connection)) 
+                using (var command = new NpgsqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", organizerToRemove.Id);
                     command.ExecuteNonQuery();
@@ -88,7 +105,6 @@ namespace EventHub
                 connection.Open();
                 var query = "UPDATE Organizers SET Name = @Name, Email = @Email, Description = @Description, Logourl = @Logourl " +
                             "WHERE Id = @Id";
-                Console.WriteLine($"Updating Organizer ID: {updatedOrganizer.Id}, Name: {updatedOrganizer.Name}, Date: {updatedOrganizer.Description}");
 
                 using (var command = new NpgsqlCommand(query, connection))
                 {

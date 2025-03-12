@@ -26,7 +26,13 @@ namespace EventHub
         {
             var button = (Button)sender;
             var organizerToRemove = (Organizer)button.DataContext;
-            OrganizerManager.Instance.RemoveOrganizer(organizerToRemove);
+            
+            MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete {organizerToRemove.Name}?", "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            
+            if (result == MessageBoxResult.Yes)
+            {
+                OrganizerManager.Instance.RemoveOrganizer(organizerToRemove);
+            }
         }
 
         private void EditOrganizer_Click(object sender, RoutedEventArgs e)

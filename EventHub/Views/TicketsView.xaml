@@ -13,7 +13,7 @@
                           BorderBrush="#DDD" Background="White">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Event Name" Binding="{Binding EventName}" Width="*"/>
+                        <DataGridTextColumn Header="Event Name" Binding="{Binding Event.Name}" Width="*"/>
                         <DataGridTextColumn Header="Buyer Name" Binding="{Binding TicketHolder.Name}" Width="*"/>
                         <DataGridTextColumn Header="Email" Binding="{Binding TicketHolder.Email}" Width="*"/>
                         <DataGridTextColumn Header="Type" Binding="{Binding PersonType}" Width="100"/>

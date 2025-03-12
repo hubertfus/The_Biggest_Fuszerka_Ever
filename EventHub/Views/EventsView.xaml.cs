@@ -26,8 +26,6 @@ namespace EventHub
         {
             if (sender is Button button && button.DataContext is Event eventItem)
             {
-                string originalName = eventItem.Name;
-                string originalDate = eventItem.Date;
 
                 EventDialog dialog = new EventDialog(new Event
                 {
@@ -35,7 +33,8 @@ namespace EventHub
                     Name = eventItem.Name,
                     Date = eventItem.Date,
                     Description = eventItem.Description,
-                    ImageUrl = eventItem.ImageUrl
+                    ImageUrl = eventItem.ImageUrl,
+                    OrganizerId = eventItem.OrganizerId,
                 });
                 dialog.ShowDialog();
 
@@ -52,13 +51,12 @@ namespace EventHub
         {
             if (sender is Button button && button.DataContext is Event eventItem)
             {
-                TicketDialog dialog = new TicketDialog(eventItem.Name);
+                TicketDialog dialog = new TicketDialog(eventItem);
                 dialog.ShowDialog();
 
                 if (dialog.DialogResult == true)
                 {
                     Ticket ticket = dialog.GeneratedTicket;
-                    Console.WriteLine(ticket.TicketHolder.PersonType);
                     TicketManager.Instance.AddTicket(ticket);
 
                     MessageBox.Show($"Ticket Generated!\n\n{ticket}", 

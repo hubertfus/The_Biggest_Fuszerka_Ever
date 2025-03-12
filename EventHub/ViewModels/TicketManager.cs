@@ -26,35 +26,39 @@ namespace EventHub
             using (var connection = _databaseHelper.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT t.id, t.eventname, p.id, p.name, p.email, p.persontype " +
+                var query = "SELECT t.id AS ticket_id, e.id AS event_id, e.name AS event_name, " +
+                            "p.id AS person_id, p.name AS person_name, p.email, p.persontype " +
                             "FROM tickets t " +
-                            "INNER JOIN people p ON t.ticketholderid = p.id";
+                            "INNER JOIN people p ON t.ticketholderid = p.id " +
+                            "INNER JOIN events e ON t.eventid = e.id";
 
                 using (var command = new NpgsqlCommand(query, connection))
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        int ticketId = reader.GetInt32(0);
-                        string eventName = reader.GetString(1);
-                        int personId = reader.GetInt32(2);
-                        string name = reader.GetString(3);
-                        string email = reader.GetString(4);
-                        string personType = reader.GetString(5);
+                        int ticketId = reader.GetInt32(0);  // t.id
+                        int eventId = reader.GetInt32(1);   // e.id
+                        string eventName = reader.GetString(2);  // e.name
+                        int personId = reader.GetInt32(3);  // p.id
+                        string personName = reader.GetString(4);  // p.name
+                        string email = reader.GetString(5);  // p.email
+                        string personType = reader.GetString(6);  // p.persontype
 
                         Person person = personType switch
                         {
-                            "VIP" => new VipPerson(personId, name, email),
-                            "Disabled" => new DisabledPerson(personId, name, email),
-                            _ => new Person(personId, name, email)
+                            "VIP" => new VipPerson(personId, personName, email),
+                            "Disabled" => new DisabledPerson(personId, personName, email),
+                            _ => new Person(personId, personName, email)
                         };
 
-                        var ticket = new Ticket(eventName, person) { Id = ticketId };
+                        var ticket = new Ticket(EventManager.Instance.Events.First(e=> e.Id == eventId), person) { Id = ticketId };
                         Tickets.Add(ticket);
                     }
                 }
             }
         }
+
 
         public void AddTicket(Ticket ticket)
         {
@@ -87,10 +91,10 @@ namespace EventHub
                     }
                 }
 
-                var insertTicketQuery = "INSERT INTO tickets (eventname, ticketholderid) VALUES (@EventName, @TicketHolderId) RETURNING id";
+                var insertTicketQuery = "INSERT INTO tickets (eventid, ticketholderid) VALUES (@EventId, @TicketHolderId) RETURNING id";
                 using (var command = new NpgsqlCommand(insertTicketQuery, connection))
                 {
-                    command.Parameters.AddWithValue("@EventName", ticket.EventName);
+                    command.Parameters.AddWithValue("@EventId", ticket.Event.Id);  // Change here
                     command.Parameters.AddWithValue("@TicketHolderId", personId);
                     ticket.Id = (int)command.ExecuteScalar();
                 }
