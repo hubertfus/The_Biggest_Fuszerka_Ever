@@ -83,18 +83,22 @@ namespace EventHub
                             insertCommand.Parameters.AddWithValue("@Email", ticket.TicketHolder.Email);
                             insertCommand.Parameters.AddWithValue("@PersonType", ticket.TicketHolder.PersonType);
                             personId = (int)insertCommand.ExecuteScalar();
+                            ticket.TicketHolder.Id = personId;
+                            Console.WriteLine(ticket.TicketHolder);
                         }
                     }
                     else
                     {
                         personId = (int)result;
+                        ticket.TicketHolder.Id = personId;
+                        Console.WriteLine(ticket.TicketHolder);
                     }
                 }
 
                 var insertTicketQuery = "INSERT INTO tickets (eventid, ticketholderid) VALUES (@EventId, @TicketHolderId) RETURNING id";
                 using (var command = new NpgsqlCommand(insertTicketQuery, connection))
                 {
-                    command.Parameters.AddWithValue("@EventId", ticket.Event.Id);  // Change here
+                    command.Parameters.AddWithValue("@EventId", ticket.Event.Id); 
                     command.Parameters.AddWithValue("@TicketHolderId", personId);
                     ticket.Id = (int)command.ExecuteScalar();
                 }
@@ -109,15 +113,40 @@ namespace EventHub
             {
                 connection.Open();
 
-                var deleteQuery = "DELETE FROM tickets WHERE id = @TicketId";
-                using (var command = new NpgsqlCommand(deleteQuery, connection))
+                using (var transaction = connection.BeginTransaction())
                 {
-                    command.Parameters.AddWithValue("@TicketId", ticket.Id);
-                    command.ExecuteNonQuery();
+                    try
+                    {
+                        var deleteTicketQuery = "DELETE FROM tickets WHERE id = @TicketId";
+                        using (var command = new NpgsqlCommand(deleteTicketQuery, connection))
+                        {
+                            command.Parameters.AddWithValue("@TicketId", ticket.Id);
+                            command.ExecuteNonQuery();
+                        }
+
+                        var deleteOrphanPeopleQuery = @"
+                            DELETE FROM people
+                            WHERE id = @TicketholderId
+                            AND NOT EXISTS (SELECT 1 FROM tickets WHERE ticketholderid = @TicketholderId)";
+
+                        using (var command = new NpgsqlCommand(deleteOrphanPeopleQuery, connection))
+                        {
+                            command.Parameters.AddWithValue("@TicketholderId", TicketManager.Instance.Tickets.First(t => t.Id == ticket.Id).TicketHolder.Id);
+                            command.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
 
             Tickets.Remove(ticket);
         }
+
     }
 }
