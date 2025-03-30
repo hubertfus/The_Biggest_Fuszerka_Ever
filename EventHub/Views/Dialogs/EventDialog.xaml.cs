@@ -70,6 +70,7 @@ namespace EventHub
 
         private bool ValidateFields()
         {
+            Console.WriteLine(EventDate.Text);
             if (string.IsNullOrWhiteSpace(EventName.Text) ||
                 string.IsNullOrWhiteSpace(EventDate.Text) ||
                 string.IsNullOrWhiteSpace(EventDescription.Text) ||
@@ -82,7 +83,7 @@ namespace EventHub
 
             if (!DateTime.TryParse(EventDate.Text, out _))
             {
-                MessageBox.Show("Invalid date format! Use YYYY-MM-DD.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Invalid date format! Use YYYY.MM.DD.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 
