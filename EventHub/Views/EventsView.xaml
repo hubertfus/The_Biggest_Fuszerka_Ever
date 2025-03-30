@@ -24,7 +24,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="150"/>
                                     </Grid.ColumnDefinitions>
 
                                     <Image Source="{Binding ImageUrl}" Width="140" Height="100" Stretch="UniformToFill"/>

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows;
 using Npgsql; // Zmieniono z SqlClient na Npgsql
 using DotNetEnv;
 
@@ -79,13 +80,9 @@ namespace EventHub
 
                     if (eventCount > 0)
                     {
-                        var updateQuery = "UPDATE Events SET OrganizerId = NULL WHERE OrganizerId = @Id";
-                        using (var updateCommand = new NpgsqlCommand(updateQuery, connection))
-                        {
-                            updateCommand.Parameters.AddWithValue("@Id", organizerToRemove.Id);
-                            updateCommand.ExecuteNonQuery();
-                        }
-                    }
+                        MessageBox.Show("Cannot delete the organizer because they are assigned to one or more events.", 
+                            "Deletion Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;                    }
                 }
 
                 var query = "DELETE FROM Organizers WHERE Id = @Id";
@@ -95,8 +92,10 @@ namespace EventHub
                     command.ExecuteNonQuery();
                 }
             }
+    
             Organizers.Remove(organizerToRemove);
         }
+
         
         public void UpdateOrganizer(Organizer updatedOrganizer)
         {

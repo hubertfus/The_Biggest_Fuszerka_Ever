@@ -106,14 +106,39 @@ namespace EventHub
             using (var connection = _databaseHelper.GetConnection())
             {
                 connection.Open();
-                var query = "DELETE FROM Events WHERE Id = @Id";
-                using (var command = new NpgsqlCommand(query, connection))
+
+                var deleteTicketsQuery = "DELETE FROM Tickets WHERE EventId = @EventId";
+                using (var deleteTicketsCommand = new NpgsqlCommand(deleteTicketsQuery, connection))
                 {
-                    command.Parameters.AddWithValue("@Id", eventToRemove.Id);
-                    command.ExecuteNonQuery();
+                    deleteTicketsCommand.Parameters.AddWithValue("@EventId", eventToRemove.Id);
+                    deleteTicketsCommand.ExecuteNonQuery();
+                }
+
+
+                var ticketsToRemove = new List<Ticket>();
+                foreach (Ticket ticket in TicketManager.Instance.Tickets)
+                {
+                    if (ticket.Event.Id == eventToRemove.Id)
+                    {
+                        ticketsToRemove.Add(ticket);
+                    }
+                }
+                
+                foreach (var ticket in ticketsToRemove)
+                {
+                    TicketManager.Instance.Tickets.Remove(ticket);
+                }
+
+                var deleteEventQuery = "DELETE FROM Events WHERE Id = @Id";
+                using (var deleteEventCommand = new NpgsqlCommand(deleteEventQuery, connection))
+                {
+                    deleteEventCommand.Parameters.AddWithValue("@Id", eventToRemove.Id);
+                    deleteEventCommand.ExecuteNonQuery();
                 }
             }
             Events.Remove(eventToRemove);
         }
+
+
     }
 }
