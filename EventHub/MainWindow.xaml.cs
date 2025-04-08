@@ -14,7 +14,7 @@ namespace EventHub
             InitializeComponent();
             using (var context = new EventHubContext())
             {
-                context.Database.Migrate();
+                DatabaseInitializer.Initialize(context);
             }
             ViewController.RegisterView("HomeView", new HomeView());
             ViewController.SetMainContentArea(MainContentArea);

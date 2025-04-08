@@ -71,4 +71,12 @@
       <Folder Include="Migrations\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="icon.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Resources\icon.ico" />
+    </ItemGroup>
+
 </Project>
