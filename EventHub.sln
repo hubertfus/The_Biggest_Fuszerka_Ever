@@ -2,10 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventHub", "EventHub\EventHub.csproj", "{777CDD4B-C116-4468-A26C-A18687195DB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Migrations\Migrations.csproj", "{14B85726-774A-4A6F-B70D-EBE56B19E0DB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seeders", "Seeders\Seeders.csproj", "{8F65D186-5A03-469C-A129-D5936612C816}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,14 +12,6 @@ Global
 		{777CDD4B-C116-4468-A26C-A18687195DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{777CDD4B-C116-4468-A26C-A18687195DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{777CDD4B-C116-4468-A26C-A18687195DB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14B85726-774A-4A6F-B70D-EBE56B19E0DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14B85726-774A-4A6F-B70D-EBE56B19E0DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14B85726-774A-4A6F-B70D-EBE56B19E0DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14B85726-774A-4A6F-B70D-EBE56B19E0DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F65D186-5A03-469C-A129-D5936612C816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F65D186-5A03-469C-A129-D5936612C816}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F65D186-5A03-469C-A129-D5936612C816}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F65D186-5A03-469C-A129-D5936612C816}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

@@ -3,8 +3,16 @@ namespace EventHub
     public class Ticket
     {
         public int Id { get; set; }
+
+        public int EventId { get; set; }
         public Event Event { get; set; }
-        public Person TicketHolder { get; set; } 
+
+        public int TicketHolderId { get; set; }
+        public Person TicketHolder { get; set; }
+
+        public string PersonType => TicketHolder?.PersonType ?? "Unknown";
+
+        public Ticket() { }
 
         public Ticket(Event xevent, Person person)
         {
@@ -12,12 +20,11 @@ namespace EventHub
             TicketHolder = person;
         }
 
-        public string PersonType => TicketHolder.PersonType;
         public override string ToString()
         {
-            return $"Event: {Event.Name}\n" +
-                   $"Buyer: {TicketHolder.Name}\n" +
-                   $"Email: {TicketHolder.Email}\n" +
+            return $"Event: {Event?.Name}\n" +
+                   $"Buyer: {TicketHolder?.Name}\n" +
+                   $"Email: {TicketHolder?.Email}\n" +
                    $"Type: {PersonType}";
         }
     }

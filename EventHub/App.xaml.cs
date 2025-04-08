@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventHub;
 
@@ -9,4 +10,5 @@ namespace EventHub;
 /// </summary>
 public partial class App : Application
 {
-}
+}        
+       

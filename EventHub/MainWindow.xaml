@@ -4,7 +4,7 @@
         Title="EventHub" MinHeight="600" MinWidth="900">
     <DockPanel>
         <ListBox DockPanel.Dock="Left" Width="200" Background="LightGray" SelectionChanged="MenuSelectionChanged">
-            <ListBoxItem Tag="HomeView">
+            <ListBoxItem Tag="HomeView" IsSelected="True">
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="🏠 Home" VerticalAlignment="Center" Margin="10,0"/>
                 </StackPanel>
@@ -24,11 +24,45 @@
                     <TextBlock Text="🎟️ Tickets" VerticalAlignment="Center" Margin="10,0"/>
                 </StackPanel>
             </ListBoxItem>
+            <ListBoxItem Tag="ConnectionSettingsView">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="🔧 Connection Settings" VerticalAlignment="Center" Margin="10,0"/>
+                </StackPanel>
+            </ListBoxItem>
             <ListBoxItem Tag="AboutView">
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="ℹ️ About app" VerticalAlignment="Center" Margin="10,0"/>
                 </StackPanel>
             </ListBoxItem>
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Padding" Value="5"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border Background="{TemplateBinding Background}" 
+                                        CornerRadius="5"
+                                        Margin="4">
+                                    <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="LightBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#D0E8FF"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Resources>
+
         </ListBox>
 
         <Grid x:Name="MainContentArea"/>

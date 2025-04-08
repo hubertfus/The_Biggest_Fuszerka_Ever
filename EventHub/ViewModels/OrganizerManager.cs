@@ -5,125 +5,80 @@ using DotNetEnv;
 
 namespace EventHub
 {
-    public class OrganizerManager
+        public class OrganizerManager
     {
         private static OrganizerManager _instance;
         public static OrganizerManager Instance => _instance ??= new OrganizerManager();
 
         public ObservableCollection<Organizer> Organizers { get; private set; }
 
-        private DatabaseHelper _databaseHelper;
-
         private OrganizerManager()
         {
             Env.Load();
-            _databaseHelper = new DatabaseHelper(Environment.GetEnvironmentVariable("DATABASE_URL"));
-            Organizers = new ObservableCollection<Organizer>();
-            LoadOrganizers();
-        }
-
-        private void LoadOrganizers()
-        {
-            using (var connection = _databaseHelper.GetConnection())
-            {
-                connection.Open();
-                var query = "SELECT Id, Name, Description, Email, LogoUrl FROM Organizers";
-                using (var command = new NpgsqlCommand(query, connection)) 
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var organizer = new Organizer
-                        {
-                            Id = reader.GetInt32(0),
-                            Name = reader["Name"].ToString(),
-                            Description = reader["Description"].ToString(),
-                            Email = reader["Email"].ToString(),
-                            LogoUrl = reader["LogoUrl"].ToString()
-                        };
-                        Organizers.Add(organizer);
-                    }
-                }
-            }
+            using var context = new EventHubContext();
+            Organizers = new ObservableCollection<Organizer>(context.Organizers.ToList());
         }
 
         public void AddOrganizer(Organizer newOrganizer)
         {
-            using (var connection = _databaseHelper.GetConnection())
-            {
-                connection.Open();
-                var query = "INSERT INTO Organizers (Name, Description, Email, LogoUrl) " +
-                            "VALUES (@Name, @Description, @Email, @LogoUrl) RETURNING Id";
-                using (var command = new NpgsqlCommand(query, connection)) 
-                {
-                    command.Parameters.AddWithValue("@Name", newOrganizer.Name);
-                    command.Parameters.AddWithValue("@Description", newOrganizer.Description);
-                    command.Parameters.AddWithValue("@Email", newOrganizer.Email);
-                    command.Parameters.AddWithValue("@LogoUrl", newOrganizer.LogoUrl);
-                    
-                    newOrganizer.Id = Convert.ToInt32(command.ExecuteScalar());
-                }
-            }
+            using var context = new EventHubContext();
+            context.Organizers.Add(newOrganizer);
+            context.SaveChanges();
             Organizers.Add(newOrganizer);
         }
 
         public void RemoveOrganizer(Organizer organizerToRemove)
         {
-            using (var connection = _databaseHelper.GetConnection())
+            using var context = new EventHubContext();
+
+            var eventsWithOrganizer = context.Events.Any(e => e.OrganizerId == organizerToRemove.Id);
+            if (eventsWithOrganizer)
             {
-                connection.Open();
-                var checkQuery = "SELECT COUNT(*) FROM Events WHERE OrganizerId = @Id";
-                using (var checkCommand = new NpgsqlCommand(checkQuery, connection))
-                {
-                    checkCommand.Parameters.AddWithValue("@Id", organizerToRemove.Id);
-                    var eventCount = (long)checkCommand.ExecuteScalar();
-
-                    if (eventCount > 0)
-                    {
-                        MessageBox.Show("Cannot delete the organizer because they are assigned to one or more events.", 
-                            "Deletion Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;                    }
-                }
-
-                var query = "DELETE FROM Organizers WHERE Id = @Id";
-                using (var command = new NpgsqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Id", organizerToRemove.Id);
-                    command.ExecuteNonQuery();
-                }
+                MessageBox.Show("Cannot delete the organizer because they are assigned to one or more events.",
+                    "Deletion Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
-    
+
+            context.Organizers.Remove(organizerToRemove);
+            context.SaveChanges();
             Organizers.Remove(organizerToRemove);
         }
 
-        
         public void UpdateOrganizer(Organizer updatedOrganizer)
         {
-            using (var connection = _databaseHelper.GetConnection())
+            using var context = new EventHubContext();
+            
+            context.Organizers.Update(updatedOrganizer);
+            context.SaveChanges();
+        
+            var existing = Organizers.FirstOrDefault(o => o.Id == updatedOrganizer.Id);
+            if (existing != null)
             {
-                connection.Open();
-                var query = "UPDATE Organizers SET Name = @Name, Email = @Email, Description = @Description, Logourl = @Logourl " +
-                            "WHERE Id = @Id";
-
-                using (var command = new NpgsqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Name", updatedOrganizer.Name);
-                    command.Parameters.AddWithValue("@Email", updatedOrganizer.Email);
-                    command.Parameters.AddWithValue("@Description", updatedOrganizer.Description);
-                    command.Parameters.AddWithValue("@Logourl", updatedOrganizer.LogoUrl);
-                    command.Parameters.AddWithValue("@Id", updatedOrganizer.Id);
-                    command.ExecuteNonQuery();
-                }
-            }
-
-            var existingEvent = Organizers.FirstOrDefault(e => e.Id == updatedOrganizer.Id);
-            if (existingEvent != null)
-            {
-                existingEvent.Name = updatedOrganizer.Name;
-                existingEvent.Email = updatedOrganizer.Email;
-                existingEvent.Description = updatedOrganizer.Description;
-                existingEvent.LogoUrl = updatedOrganizer.LogoUrl;
+                existing.Name = updatedOrganizer.Name;
+                existing.Email = updatedOrganizer.Email;
+                existing.Description = updatedOrganizer.Description;
+                existing.LogoUrl = updatedOrganizer.LogoUrl;
+        
+                existing.OnPropertyChanged(nameof(existing.Name));
+                existing.OnPropertyChanged(nameof(existing.Email));
+                existing.OnPropertyChanged(nameof(existing.Description));
+                existing.OnPropertyChanged(nameof(existing.ShortDescription));
+                existing.OnPropertyChanged(nameof(existing.LogoUrl));
             }
         }
+        
+        public void LoadOrganizers()
+        {
+            using var context = new EventHubContext();
+            var organizersFromDb = context.Organizers.ToList();
+    
+            Organizers.Clear();
+            foreach (var organizer in organizersFromDb)
+            {
+                Console.WriteLine(organizer);
+                Organizers.Add(organizer);
+            }
+        }
+
     }
 }

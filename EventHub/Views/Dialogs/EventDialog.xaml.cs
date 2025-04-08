@@ -18,7 +18,7 @@ namespace EventHub
             {
                 EventItem = eventToEdit;
                 EventName.Text = EventItem.Name;
-                EventDate.Text = EventItem.Date.ToString("yyyy-MM-dd"); // Konwersja DateTime do string
+                EventDate.Text = EventItem.Date.ToString("yyyy-MM-dd"); 
                 EventDescription.Text = EventItem.Description;
                 EventImageUrl.Text = EventItem.ImageUrl;
                 if (eventToEdit.OrganizerId > 0)
@@ -49,7 +49,6 @@ namespace EventHub
 
             EventItem.Name = EventName.Text;
 
-            // Konwersja stringa do DateTime
             if (DateTime.TryParse(EventDate.Text, out DateTime parsedDate))
             {
                 EventItem.Date = parsedDate;

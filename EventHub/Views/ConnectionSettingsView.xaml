@@ -1,0 +1,39 @@
+<UserControl x:Class="EventHub.ConnectionSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:EventHub">
+    
+
+    <Grid Background="#F4F4F4">
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" MinWidth="350" Margin="10">
+            
+            <TextBlock Text="Host" FontSize="16" Margin="0,5"/>
+            <TextBox Text="{Binding ServerName}" FontSize="14" Padding="10" Margin="0,10"
+                     BorderBrush="#DDD" BorderThickness="1"/>
+
+            <TextBlock Text="Database Name" FontSize="16" Margin="0,5"/>
+            <TextBox Text="{Binding DatabaseName}" FontSize="14" Padding="10" Margin="0,10"
+                     BorderBrush="#DDD" BorderThickness="1"/>
+
+            <TextBlock Text="Username" FontSize="16" Margin="0,5"/>
+            <TextBox Text="{Binding Username}" FontSize="14" Padding="10" Margin="0,10"
+                     BorderBrush="#DDD" BorderThickness="1"/>
+
+            <TextBlock Text="Password" FontSize="16" Margin="0,5"/>
+            <PasswordBox PasswordChanged="PasswordBox_PasswordChanged"
+                         FontSize="14" Padding="10"
+                         BorderBrush="#DDD" BorderThickness="1"/>
+
+            <TextBlock Text="{Binding ConnectionStatus}" FontSize="14"  MaxWidth="600" Foreground="DarkSlateGray" Margin="0,10"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10">
+                <Button Content="Test" Command="{Binding TestConnectionCommand}" Width="100" Height="40" Margin="0,0,10,0" 
+                        Background="#FF2196F3" Foreground="White" BorderBrush="Transparent"/>
+                <Button Content="Connect" Width="100" Height="40"
+                        Background="#FF4CAF50" Foreground="White" BorderBrush="Transparent"
+                        Click="Connect_Click"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

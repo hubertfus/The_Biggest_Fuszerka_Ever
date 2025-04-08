@@ -1,8 +1,5 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using Npgsql;
-using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventHub
 {
@@ -13,82 +10,50 @@ namespace EventHub
 
         public ObservableCollection<Event> Events { get; private set; }
 
-        private DatabaseHelper _databaseHelper;
-
         private EventManager()
         {
-            Env.Load();
-            _databaseHelper = new DatabaseHelper(Environment.GetEnvironmentVariable("DATABASE_URL"));
-            Events = new ObservableCollection<Event>();
-            LoadEvents();
-        }
-
-        private void LoadEvents()
-        {
-            using (var connection = _databaseHelper.GetConnection())
-            {
-                connection.Open();
-                var query = "SELECT Id, Name, Date, Description, ImageUrl, OrganizerId FROM Events";
-                using (var command = new NpgsqlCommand(query, connection))
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var ev = new Event
-                        {
-                            Id = reader.GetInt32(0),
-                            Name = reader["Name"].ToString(),
-                            Date = reader.GetDateTime(2),
-                            Description = reader["Description"].ToString(),
-                            ImageUrl = reader["ImageUrl"].ToString(),
-                            OrganizerId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5)
-                        };
-
-                        Events.Add(ev);
-                    }
-                }
-            }
+            using var context = new EventHubContext();
+            Events = new ObservableCollection<Event>(context.Events.Include(e => e.Organizer).ToList());
         }
 
         public void AddEvent(Event newEvent)
         {
-            using (var connection = _databaseHelper.GetConnection())
+            using var context = new EventHubContext();
+    
+            if (newEvent.Date.Kind == DateTimeKind.Unspecified)
             {
-                connection.Open();
-                var query = "INSERT INTO Events (Name, Date, Description, ImageUrl, OrganizerId) " +
-                            "VALUES (@Name, @Date, @Description, @ImageUrl, @OrganizerId) RETURNING Id";
-                using (var command = new NpgsqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Name", newEvent.Name);
-                    command.Parameters.AddWithValue("@Date", newEvent.Date); 
-                    command.Parameters.AddWithValue("@Description", newEvent.Description);
-                    command.Parameters.AddWithValue("@ImageUrl", newEvent.ImageUrl);
-                    command.Parameters.AddWithValue("@OrganizerId", newEvent.OrganizerId);
-
-                    newEvent.Id = Convert.ToInt32(command.ExecuteScalar());
-                }
+                newEvent.Date = DateTime.SpecifyKind(newEvent.Date, DateTimeKind.Utc);
             }
+
+            var existingOrganizer = context.Organizers
+                .FirstOrDefault(o => o.Email == newEvent.Organizer.Email);
+    
+            if (existingOrganizer != null)
+            {
+                newEvent.Organizer = existingOrganizer;
+            }
+            else
+            {
+                context.Organizers.Add(newEvent.Organizer);
+            }
+
+            context.Events.Add(newEvent);
+            context.SaveChanges();
+    
             Events.Add(newEvent);
         }
 
         public void UpdateEvent(Event updatedEvent)
         {
-            using (var connection = _databaseHelper.GetConnection())
+            using var context = new EventHubContext();
+    
+            if (updatedEvent.Date.Kind == DateTimeKind.Unspecified)
             {
-                connection.Open();
-                var query = "UPDATE Events SET Name = @Name, Date = @Date, Description = @Description, " +
-                            "ImageUrl = @ImageUrl, OrganizerId = @OrganizerId WHERE Id = @Id";
-                using (var command = new NpgsqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Name", updatedEvent.Name);
-                    command.Parameters.AddWithValue("@Date", updatedEvent.Date);
-                    command.Parameters.AddWithValue("@Description", updatedEvent.Description);
-                    command.Parameters.AddWithValue("@ImageUrl", updatedEvent.ImageUrl);
-                    command.Parameters.AddWithValue("@OrganizerId", updatedEvent.OrganizerId);
-                    command.Parameters.AddWithValue("@Id", updatedEvent.Id);
-                    command.ExecuteNonQuery();
-                }
+                updatedEvent.Date = DateTime.SpecifyKind(updatedEvent.Date, DateTimeKind.Utc);
             }
+    
+            context.Events.Update(updatedEvent);
+            context.SaveChanges();
 
             var existingEvent = Events.FirstOrDefault(e => e.Id == updatedEvent.Id);
             if (existingEvent != null)
@@ -98,47 +63,63 @@ namespace EventHub
                 existingEvent.Description = updatedEvent.Description;
                 existingEvent.ImageUrl = updatedEvent.ImageUrl;
                 existingEvent.Organizer = updatedEvent.Organizer;
+                
+                existingEvent.OnPropertyChanged(nameof(existingEvent.Name));
+                existingEvent.OnPropertyChanged(nameof(existingEvent.Date));
+                existingEvent.OnPropertyChanged(nameof(existingEvent.Description));
+                existingEvent.OnPropertyChanged(nameof(existingEvent.ShortDescription));
+                existingEvent.OnPropertyChanged(nameof(existingEvent.ImageUrl));
+                existingEvent.OnPropertyChanged(nameof(existingEvent.Organizer));
+
             }
         }
+
 
         public void RemoveEvent(Event eventToRemove)
         {
-            using (var connection = _databaseHelper.GetConnection())
+            using var context = new EventHubContext();
+
+            var existingEvent = context.Events
+                .Include(e => e.Tickets)
+                .FirstOrDefault(e => e.Id == eventToRemove.Id);
+
+            if (existingEvent != null)
             {
-                connection.Open();
+                var ticketsToRemove = context.Tickets
+                    .Where(t => t.EventId == existingEvent.Id)
+                    .ToList();
 
-                var deleteTicketsQuery = "DELETE FROM Tickets WHERE EventId = @EventId";
-                using (var deleteTicketsCommand = new NpgsqlCommand(deleteTicketsQuery, connection))
-                {
-                    deleteTicketsCommand.Parameters.AddWithValue("@EventId", eventToRemove.Id);
-                    deleteTicketsCommand.ExecuteNonQuery();
-                }
+                context.Tickets.RemoveRange(ticketsToRemove);
+                context.Events.Remove(existingEvent);
+                context.SaveChanges();
 
-
-                var ticketsToRemove = new List<Ticket>();
-                foreach (Ticket ticket in TicketManager.Instance.Tickets)
-                {
-                    if (ticket.Event.Id == eventToRemove.Id)
-                    {
-                        ticketsToRemove.Add(ticket);
-                    }
-                }
-                
                 foreach (var ticket in ticketsToRemove)
                 {
-                    TicketManager.Instance.Tickets.Remove(ticket);
+                    var ticketInUi = TicketManager.Instance.Tickets.FirstOrDefault(t => t.Id == ticket.Id);
+                    if (ticketInUi != null)
+                    {
+                        TicketManager.Instance.Tickets.Remove(ticketInUi);
+                    }
                 }
 
-                var deleteEventQuery = "DELETE FROM Events WHERE Id = @Id";
-                using (var deleteEventCommand = new NpgsqlCommand(deleteEventQuery, connection))
+                var eventInUi = Events.FirstOrDefault(e => e.Id == eventToRemove.Id);
+                if (eventInUi != null)
                 {
-                    deleteEventCommand.Parameters.AddWithValue("@Id", eventToRemove.Id);
-                    deleteEventCommand.ExecuteNonQuery();
+                    Events.Remove(eventInUi);
                 }
             }
-            Events.Remove(eventToRemove);
         }
-
-
+        public void LoadEvents()
+        {
+            using var context = new EventHubContext();
+            var eventsFromDb = context.Events.Include(e => e.Organizer).ToList();
+    
+            Events.Clear();
+            foreach (var eventItem in eventsFromDb)
+            {
+                Events.Add(eventItem);
+            }
+        }
     }
+
 }
