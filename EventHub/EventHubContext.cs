@@ -14,7 +14,6 @@ namespace EventHub
             DotNetEnv.Env.Load();
             var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
             optionsBuilder.UseNpgsql(connectionString);
-            Console.WriteLine(connectionString);
         }
         
         public void RefreshConnectionString()

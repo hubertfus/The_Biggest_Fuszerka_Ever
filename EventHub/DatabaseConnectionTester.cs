@@ -12,14 +12,12 @@ public static class DatabaseConnectionTester
             {
                 connection.Open();
                 message = "✅ Connection successful.";
-                Console.WriteLine("connection successful");
                 return true;
             }
         }
         catch (Exception ex)
         {
             message = $"❌ Connection failed: {ex.Message}";
-            Console.WriteLine(message);
             return false;
         }
     }

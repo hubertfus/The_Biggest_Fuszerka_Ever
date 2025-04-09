@@ -69,7 +69,6 @@ namespace EventHub
 
         private bool ValidateFields()
         {
-            Console.WriteLine(EventDate.Text);
             if (string.IsNullOrWhiteSpace(EventName.Text) ||
                 string.IsNullOrWhiteSpace(EventDate.Text) ||
                 string.IsNullOrWhiteSpace(EventDescription.Text) ||

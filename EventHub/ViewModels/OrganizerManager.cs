@@ -75,7 +75,6 @@ namespace EventHub
             Organizers.Clear();
             foreach (var organizer in organizersFromDb)
             {
-                Console.WriteLine(organizer);
                 Organizers.Add(organizer);
             }
         }

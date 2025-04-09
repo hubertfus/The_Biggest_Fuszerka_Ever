@@ -84,7 +84,6 @@ namespace EventHub
             if (DatabaseConnectionTester.TestConnection(settings.GetConnectionString(), out string msg))
             {
                 SaveSettingsToEnv();
-                Console.WriteLine(msg);
                 ConnectionStatus = "✅ Połączenie udane!";
                 var context = new EventHubContext();
                 context.RefreshConnectionString(); 
@@ -112,10 +111,10 @@ namespace EventHub
             if (DatabaseConnectionTester.TestConnection(settings.GetConnectionString(), out string msg))
             {
                 SaveSettingsToEnv();
-                Console.WriteLine(msg);
                 ConnectionStatus = "✅ Połączenie udane!";
                 var context = new EventHubContext();
                 context.RefreshConnectionString(); 
+                DatabaseInitializer.Initialize(context);
 
                 OrganizerManager.Instance.LoadOrganizers();
                 EventManager.Instance.LoadEvents();
