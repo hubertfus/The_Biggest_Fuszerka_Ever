@@ -28,7 +28,7 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10">
                 <Button Content="Test" Command="{Binding TestConnectionCommand}" Width="100" Height="40" Margin="0,0,10,0" 
-                        Background="#FF2196F3" Foreground="White" BorderBrush="Transparent"/>
+                        Background="#FF2196F3" Foreground="White" BorderBrush="Transparent" Click="Test_Connect_Click"/>
                 <Button Content="Connect" Width="100" Height="40"
                         Background="#FF4CAF50" Foreground="White" BorderBrush="Transparent"
                         Click="Connect_Click"/>

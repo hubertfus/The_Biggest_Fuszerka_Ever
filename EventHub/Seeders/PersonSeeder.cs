@@ -6,7 +6,7 @@ public static class PersonSeeder
 {
     public static void Seed(EventHubContext context)
     {
-        if (context.People.Any()) return; // DB already seeded
+        if (context.People.Any()) return; 
 
         var people = new List<Person>
         {

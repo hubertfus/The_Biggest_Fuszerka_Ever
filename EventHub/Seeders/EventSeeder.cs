@@ -16,25 +16,25 @@ public static class EventSeeder
             new Event
             {
                 Name = "Future Tech Conference 2023",
-                Date = DateTime.UtcNow.AddMonths(2), // Changed to UTC
+                Date = DateTime.UtcNow.AddMonths(2), 
                 Description = "Join us for the annual Future Tech Conference...",
-                ImageUrl = "https://example.com/images/future-tech.jpg",
+                ImageUrl = "https://picsum.photos/200/300",
                 OrganizerId = organizers[0].Id
             },
             new Event
             {
                 Name = "Summer Music Festival",
-                Date = DateTime.UtcNow.AddMonths(3), // Changed to UTC
+                Date = DateTime.UtcNow.AddMonths(3), 
                 Description = "The biggest music festival of the year...",
-                ImageUrl = "https://example.com/images/summer-fest.jpg",
+                ImageUrl = "https://picsum.photos/200/300",
                 OrganizerId = organizers[1].Id
             },
             new Event
             {
                 Name = "Business Innovation Summit",
-                Date = DateTime.UtcNow.AddMonths(1), // Changed to UTC
+                Date = DateTime.UtcNow.AddMonths(1), 
                 Description = "A two-day summit focusing on innovative business strategies...",
-                ImageUrl = "https://example.com/images/business-summit.jpg",
+                ImageUrl = "https://picsum.photos/200/300",
                 OrganizerId = organizers[2].Id
             }
         };
